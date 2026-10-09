@@ -1,0 +1,6 @@
+# 核心依赖（Windows + WPS Office 环境）
+pywin32>=306          # COM 自动化
+Pillow>=10.0          # 素材生成与图片尺寸读取
+
+# 可选：落盘校验与渲染目检
+pymupdf>=1.23         # fitz，用于 PDF 溢出校验 / 逐页渲染

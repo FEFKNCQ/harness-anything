@@ -112,6 +112,42 @@ python build_sustech.py   # WPS可见生成 → PPTX + PDF
 
 ---
 
+### 6. pptengine — 通用 WPS PPT 生成引擎（路径无关，开箱即用）
+
+把 PPT 制作沉淀成**可复用的引擎**：路径全部基于包位置推导，**不含任何机器相关绝对路径**，克隆即可运行。
+
+| 能力 | 说明 |
+|------|------|
+| 代码驱动 | `Deck` + `el.*` 原语，几行代码出一页 |
+| JSON 驱动 | `slides.json` 描述页面，`type` 路由渲染，换内容零改码 |
+| 素材自生成 | 渐变横幅 / 箭头 / 圆环 / 背景 / 科研示意图全部 PIL 绘制，不依赖外部图床 |
+| 落盘校验 | PyMuPDF 检查文本溢出，逐页渲染目检 |
+
+```bash
+cd WPS/ppt-engine && pip install -r requirements.txt
+cd examples
+python build_demo.py          # → out/demo.pptx（+PDF）
+python build_from_json.py     # → out/from_json.pptx
+```
+
+```python
+from pptengine import Deck, el
+from pptengine.assets import ensure_default_assets
+
+assets = ensure_default_assets()
+deck = Deck(bg=str(assets / "bg_page.png"))
+s = deck.add_slide()
+el.header(s, "1.1", "国家重大需求")
+el.grad_bar(s, "bar_blue.png", 16, 186, 300, 32, "栏目名")
+deck.save("out/demo.pptx")
+```
+
+**引擎已内置规避 7 个 WPS COM 坑**：`Adjustments.Item(1)=` 语法错误、`Bold=False` 异常、`WordWrap` 与居中冲突、多行居中上浮、`AddTable` 边框不稳、`SaveAs` 静默失败、中文字体方块。
+
+> 📖 完整文档见 [WPS/ppt-engine/README.md](WPS/ppt-engine/README.md)
+
+---
+
 ### 4. Photoshop Harness — Adobe Photoshop AI Agent
 
 通过 Windows COM 自动化接口操控 **Adobe Photoshop**，让 AI Agent 直接创建和编辑位图图像。
